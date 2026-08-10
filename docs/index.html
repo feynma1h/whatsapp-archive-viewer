@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WhatsApp Archives</title>
+<title>Archive Viewer for WhatsApp Exports</title>
+<meta name="description" content="Open-source, fully client-side viewer for WhatsApp chat export .zip files. Nothing is uploaded — your files stay on your device. Unofficial tool; not affiliated with WhatsApp or Meta.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='7' fill='%2300a884'/><path fill='white' d='M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z'/><circle cx='8.6' cy='11.6' r='1' fill='%2300a884'/><circle cx='12' cy='11.6' r='1' fill='%2300a884'/><circle cx='15.4' cy='11.6' r='1' fill='%2300a884'/></svg>">
 <link rel="stylesheet" href="css/app.css">
 </head>
@@ -11,7 +12,7 @@
 <div id="app">
   <div id="side">
     <header>
-      <span class="logo"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></span><h1>WhatsApp Archives</h1>
+      <span class="logo"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></span><h1>Archive Viewer</h1>
       <span class="tag">read-only</span>
     </header>
     <div id="filterWrap">
@@ -26,7 +27,7 @@
   <div id="main">
     <div id="empty">
       <div class="big"><svg viewBox="0 0 24 24" width="88" height="88" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></div>
-      <h2>WhatsApp Archive Viewer</h2>
+      <h2>Archive Viewer <span class="h2sub">for WhatsApp exports</span></h2>
       <p id="emptyText">Loading…</p>
       <div id="pickRow">
         <button id="pickBtn">Choose export .zip files</button>
@@ -34,6 +35,9 @@
       </div>
       <p id="emptyNote">Heads-up: when picking a folder, your browser may label it
         "upload" — nothing ever leaves your device.</p>
+      <p id="emptyLegal">Unofficial open-source tool — not affiliated with WhatsApp or Meta.
+        <a href="https://github.com/feynma1h/whatsapp-archive-viewer" target="_blank"
+           rel="noopener">Source code on GitHub</a></p>
     </div>
     <input type="file" id="fileInput" accept=".zip,application/zip" multiple>
     <input type="file" id="folderInput" webkitdirectory multiple>
@@ -76,7 +80,7 @@
       </div>
       <div id="spin"><div class="loader"></div><div id="spinText">Opening chat…</div></div>
       <button id="toBottom" title="Jump to latest">⬇</button>
-      <div id="readonly">🔒 Archived chat — read-only. Your original export files are never modified.</div>
+      <div id="readonly">🔒 Read-only — your export files are never modified. Unofficial tool, not affiliated with WhatsApp.</div>
     </div>
   </div>
 </div>

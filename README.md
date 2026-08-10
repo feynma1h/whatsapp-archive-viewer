@@ -1,7 +1,11 @@
-# WhatsApp Archive Viewer
+# Archive Viewer for WhatsApp Exports
 
-Read your WhatsApp export `.zip` files in a WhatsApp-style web UI —
+Read your WhatsApp export `.zip` files in a familiar chat-style web UI —
 **read-only, zero extraction, and (in the web version) zero upload**.
+
+> **Unofficial tool** — not affiliated with, endorsed by, or connected to
+> WhatsApp or Meta. It only reads the export files WhatsApp already lets you
+> save from your own chats.
 
 Works in two modes with the same single page:
 
@@ -33,6 +37,12 @@ that contains them (any layout of subfolders is fine):
 
 ```bash
 python3 whatsapp-archive-viewer/server.py
+```
+
+Or run it from anywhere and point it at the folder holding your exports:
+
+```bash
+python3 server.py --root ~/path/to/your/exports
 ```
 
 Opens http://127.0.0.1:8471.

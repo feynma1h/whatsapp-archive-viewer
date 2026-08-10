@@ -293,10 +293,19 @@ class QuietServer(ThreadingHTTPServer):
 
 
 def main():
+    global ROOT
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=PORT)
     ap.add_argument("--no-browser", action="store_true")
+    ap.add_argument("--root", type=Path, default=None,
+                    help="folder containing the export zips "
+                         "(default: this folder's parent)")
     args = ap.parse_args()
+    if args.root:
+        ROOT = args.root.expanduser().resolve()
+        if not ROOT.is_dir():
+            print(f"--root {ROOT} is not a folder")
+            sys.exit(1)
 
     try:
         srv = QuietServer(("127.0.0.1", args.port), Handler)
@@ -306,7 +315,7 @@ def main():
         sys.exit(1)
 
     url = f"http://127.0.0.1:{args.port}"
-    print(f"WhatsApp Archive Viewer → {url}   (Ctrl+C to stop)")
+    print(f"Archive Viewer for WhatsApp exports → {url}   (Ctrl+C to stop)")
     print(f"Reading archives from: {ROOT}  — read-only, nothing is extracted.")
     if not args.no_browser:
         threading.Timer(0.4, lambda: webbrowser.open(url)).start()
