@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp Archives</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='7' fill='%2300a884'/><path fill='white' d='M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z'/><circle cx='8.6' cy='11.6' r='1' fill='%2300a884'/><circle cx='12' cy='11.6' r='1' fill='%2300a884'/><circle cx='15.4' cy='11.6' r='1' fill='%2300a884'/></svg>">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <div id="side">
+    <header>
+      <span class="logo"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></span><h1>WhatsApp Archives</h1>
+      <span class="tag">read-only</span>
+    </header>
+    <div id="filterWrap">
+      <input id="filter" placeholder="Search chats" autocomplete="off">
+      <button id="addBtn" class="sideAdd" title="Add export zip files">+ Files</button>
+      <button id="addFolderBtn" class="sideAdd" title="Add a whole folder of exports">+ Folder</button>
+    </div>
+    <div id="chats"></div>
+    <div class="foot" id="sideFoot">Starting…</div>
+  </div>
+
+  <div id="main">
+    <div id="empty">
+      <div class="big"><svg viewBox="0 0 24 24" width="88" height="88" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></div>
+      <h2>WhatsApp Archive Viewer</h2>
+      <p id="emptyText">Loading…</p>
+      <div id="pickRow">
+        <button id="pickBtn">Choose export .zip files</button>
+        <button id="pickFolderBtn">or add a whole folder</button>
+      </div>
+      <p id="emptyNote">Heads-up: when picking a folder, your browser may label it
+        "upload" — nothing ever leaves your device.</p>
+    </div>
+    <input type="file" id="fileInput" accept=".zip,application/zip" multiple>
+    <input type="file" id="folderInput" webkitdirectory multiple>
+
+    <div id="chatview">
+      <div id="head">
+        <div class="avatar" id="hAvatar"></div>
+        <div class="cmeta">
+          <div class="cname" id="hName"></div>
+          <div class="csub" id="hSub"></div>
+        </div>
+        <div class="tools">
+          <select id="meSelect" title="Which participant is you (shown on the right)"></select>
+          <button id="btnCal" title="Jump to date" aria-label="Jump to date">
+            <svg viewBox="0 0 24 24" width="20" height="20"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>
+          </button>
+          <button id="btnSearch" title="Search messages" aria-label="Search messages">
+            <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="6.5"/><path d="M20.5 20.5l-4.7-4.7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="calPanel">
+        <div class="calHead">
+          <button id="calPrev" title="Previous month">‹</button>
+          <div id="calTitle"></div>
+          <button id="calNext" title="Next month">›</button>
+        </div>
+        <div class="calGrid" id="calGrid"></div>
+      </div>
+      <div id="searchbar">
+        <input id="q" placeholder="Search within chat… (Enter for older, Shift+Enter for newer)" autocomplete="off">
+        <span class="count" id="qCount"></span>
+        <button id="qPrev" title="Older result">↑</button>
+        <button id="qNext" title="Newer result">↓</button>
+        <button id="qClose" title="Close search">✕</button>
+      </div>
+      <div id="scroller">
+        <div id="msgs"></div>
+      </div>
+      <div id="spin"><div class="loader"></div><div id="spinText">Opening chat…</div></div>
+      <button id="toBottom" title="Jump to latest">⬇</button>
+      <div id="readonly">🔒 Archived chat — read-only. Your original export files are never modified.</div>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox">
+  <div id="lbBar">
+    <span id="lbInfo"></span><span class="sp"></span>
+    <button id="lbDl" title="Download original">⬇</button>
+    <button id="lbClose" title="Close">✕</button>
+  </div>
+  <div id="lbBody"></div>
+</div>
+<div id="dropOverlay"><span>Drop WhatsApp export .zip files to open them</span></div>
+<div id="toast"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
