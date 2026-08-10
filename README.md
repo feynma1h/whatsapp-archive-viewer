@@ -100,3 +100,7 @@ Browser support: Chrome/Edge/Firefox and Safari 16.4+ (needs native
   in Chrome (a download chip is offered instead).
 - In web mode you re-pick the files each visit — by design, the page holds
   no file access once closed.
+
+## License
+
+[MIT](LICENSE)
