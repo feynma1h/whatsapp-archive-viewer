@@ -201,6 +201,7 @@ async function openChat(a){
   closeSearch(true);
   closeCal();
   stickBottom = false; anchorIdx = null;
+  $("dateFloat").classList.remove("on");
   $("spinText").textContent = "Opening chat…";
   $("spin").classList.add("on");
   state.chunks.clear(); state.byIndex.clear(); state.loadingChunks.clear();
@@ -518,12 +519,32 @@ function watchMedia(chunkEl){
   });
 }
 
+/* floating date pill: shows the date of the topmost visible message while
+   the user scrolls, then fades out — like WhatsApp's hovering date chip.
+   Driven by direct user input (wheel/touch/scrollbar), so programmatic pins
+   and jumps never flash it. */
+let pillTimer = null, pillLastCompute = 0;
+let userScrollUntil = 0, scrollbarDrag = false;
+function updateDatePill(){
+  const now = performance.now();
+  if (now - pillLastCompute > 80){                   // throttle the DOM walk
+    pillLastCompute = now;
+    const idx = firstVisibleIndex();
+    const m = idx !== null ? state.byIndex.get(idx) : null;
+    if (m) $("dateFloatPill").textContent = fmtDay(m.ts);
+  }
+  $("dateFloat").classList.add("on");
+  clearTimeout(pillTimer);
+  pillTimer = setTimeout(() => $("dateFloat").classList.remove("on"), 1200);
+}
+
 let scrollBusy = false;
 scroller.addEventListener("scroll", async () => {
   if (!state.meta) return;
   const dist = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
   // only user-driven scrolling may change follow-bottom / release the anchor
   if (performance.now() >= autoScrollUntil){ stickBottom = dist < 60; anchorIdx = null; }
+  if (scrollbarDrag || performance.now() < userScrollUntil) updateDatePill();
   $("toBottom").classList.toggle("on", dist > 900);
   if (scrollBusy) return;
   scrollBusy = true;
@@ -541,12 +562,20 @@ scroller.addEventListener("scroll", async () => {
 // never fights the user
 scroller.addEventListener("wheel", e => {
   if (e.deltaY < 0){ stickBottom = false; anchorIdx = null; }
+  userScrollUntil = performance.now() + 400;   // macOS momentum keeps firing wheel
 }, {passive: true});
 scroller.addEventListener("touchstart", () => { anchorIdx = null; }, {passive: true});
+scroller.addEventListener("touchmove", () => {
+  userScrollUntil = performance.now() + 400;
+}, {passive: true});
 scroller.addEventListener("mousedown", e => {
   if (e.clientX >= scroller.getBoundingClientRect().right - 20){   // scrollbar grab
     stickBottom = false; anchorIdx = null;
+    scrollbarDrag = true;
   }
+});
+window.addEventListener("mouseup", () => {
+  if (scrollbarDrag){ scrollbarDrag = false; userScrollUntil = performance.now() + 400; }
 });
 async function fillViewport(token){
   for (let guard = 0; guard < 30; guard++){

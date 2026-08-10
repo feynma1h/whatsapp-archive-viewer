@@ -118,6 +118,12 @@
         border-top-color:var(--accent); animation:spin 0.9s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
 
+  #dateFloat{position:sticky; top:8px; height:0; display:flex; justify-content:center;
+        z-index:7; pointer-events:none; opacity:0; transition:opacity .25s}
+  #dateFloat.on{opacity:1}
+  #dateFloat span{background:var(--chip); color:var(--sub); font-size:12px; padding:5px 12px;
+        border-radius:8px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.45)}
+
   .day{display:flex; justify-content:center; margin:14px 0 6px}
   .day span{background:var(--chip); color:var(--sub); font-size:12px; padding:5px 12px;
         border-radius:8px; box-shadow:0 1px 1px rgba(0,0,0,.3)}
