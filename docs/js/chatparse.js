@@ -13,8 +13,6 @@ const EDIT_MARK = "<This message was edited>";
 
 const trimMarks = s => s.replace(LRM_RE, "").trim();
 
-export { ATTACH_RE };
-
 export function buildChatIndex(text, chatName){
   const RE = /^\u200e?\[(\d{1,2})[./](\d{1,2})[./](\d{2,4}),?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AaPp][Mm])?\]\s?/gm;
 

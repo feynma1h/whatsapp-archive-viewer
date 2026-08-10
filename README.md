@@ -18,7 +18,7 @@ Works in two modes with the same single page:
 | | Local server mode | Web (static) mode |
 |---|---|---|
 | How | `python3 server.py` next to your archives | Host `docs/` anywhere static (GitHub Pages) |
-| Archive discovery | scans the parent folder for `.zip` files | you pick/drop files from your device |
+| Archive discovery | scans a folder for `.zip` files (its parent, or `--root`) | you pick/drop files or folders from your device |
 | Data flow | localhost only | **files never leave the browser** |
 | Needs | Python 3 (stdlib only) | a modern browser, nothing else |
 
@@ -29,9 +29,11 @@ Works in two modes with the same single page:
 - Photos, videos, GIFs, stickers, voice notes, documents and contact cards,
   decompressed straight out of the zip on demand; full-screen lightbox
 - Search (Enter = older, Shift+Enter = newer), calendar jump with
-  message-days highlighted, jump-to-latest
-- Smooth reading in huge chats: messages load in pages, media loads lazily,
-  and scroll position is held steady while media streams in
+  message-days highlighted, jump-to-latest, and a floating date chip while
+  scrolling
+- Smooth reading in huge chats: messages load in pages, media loads lazily
+  (videos get first-frame thumbnails), and scroll position is held steady
+  while media streams in
 - **Repairs damaged exports**: some WhatsApp zips have a truncated index that
   hides the newest media and even `_chat.txt` from normal tools — the viewer
   detects this and recovers the lost entries (in both modes)

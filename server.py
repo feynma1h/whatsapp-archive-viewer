@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-WhatsApp Archive Viewer — read-only local server.
+Archive Viewer for WhatsApp exports — read-only local server.
 
-Serves the web app plus chats and media STRAIGHT OUT of the WhatsApp export
-.zip files found next to this folder. Nothing is ever extracted to disk, and
-archives are opened read-only. Domain logic lives in archive.py.
+Serves the web app plus chats and media STRAIGHT OUT of WhatsApp export
+.zip files — by default those found next to this folder, or anywhere via
+--root. Nothing is ever extracted to disk, and archives are opened
+read-only. Domain logic lives in archive.py.
 
-Run:  python3 server.py          (opens your browser)
+Run:  python3 server.py                     (opens your browser)
+      python3 server.py --root ~/my/exports
       python3 server.py --no-browser
 """
 import argparse
 import hashlib
+import os
 import json
 import re
 import sys
@@ -66,7 +69,7 @@ def archive_by_id(aid):
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "WAViewer/1.0"
+    server_version = "ArchiveViewer/1.0"
 
     def log_message(self, *a):            # keep the console quiet
         pass
@@ -86,7 +89,10 @@ class Handler(BaseHTTPRequestHandler):
     def _static(self, rel):
         base = DOCS.resolve()
         p = (base / rel).resolve()
-        inside = str(p).startswith(str(base) + "/") or p == base
+        try:
+            inside = p.is_relative_to(base)
+        except AttributeError:                     # Python < 3.9
+            inside = str(p).startswith(str(base) + os.sep) or p == base
         if not inside or not p.is_file():
             return self._err(404, "not found")
         body = p.read_bytes()

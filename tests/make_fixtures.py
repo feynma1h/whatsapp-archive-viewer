@@ -16,7 +16,7 @@ from pathlib import Path
 PNG = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8"
     "z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
-LRM = "‎"
+LRM = "\u200e"
 
 NORMAL_CHAT = (
     f"[20/05/24, 10:00:00 AM] Testy: {LRM}Messages and calls are end-to-end encrypted.\n"

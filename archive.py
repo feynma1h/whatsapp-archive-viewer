@@ -182,9 +182,9 @@ def get_zip(aid, path):
 
 # ------------------------------------------------------------- chat parsing --
 
-LRM = "‎"
+LRM = "\u200e"
 LINE_RE = re.compile(
-    r"^‎?\[(\d{1,2})[./](\d{1,2})[./](\d{2,4}),?\s+"
+    r"^\u200e?\[(\d{1,2})[./](\d{1,2})[./](\d{2,4}),?\s+"
     r"(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AaPp][Mm])?\]\s?",
     re.M,
 )
@@ -194,7 +194,7 @@ OMITTED_RE = re.compile(
 # the same marker with WhatsApp's invisible LRM prefix, possibly after a
 # caption on the same line ("This is finished ‎image omitted")
 OMIT_MARK_RE = re.compile(
-    r"‎(image|video|audio|sticker|GIF|document|Contact card) omitted", re.I)
+    r"\u200e(image|video|audio|sticker|GIF|document|Contact card) omitted", re.I)
 CALL_RE = re.compile(
     r"^(?:Missed voice call|Missed video call|Voice call|Video call|"
     r"Call declined|No answer|Silenced call)\b", re.I)
@@ -269,12 +269,12 @@ class ChatIndex:
                 # (empty / unsupported message).
                 line = text[m.end():line_end].rstrip()
                 if line.endswith(":") and 1 < len(line) <= 60:
-                    sender = line[:-1].strip(LRM + "‏ ").strip()
+                    sender = line[:-1].strip(LRM + "\u200f ").strip()
                     content = line_end
                 else:
                     sender, content = "", m.end()
             else:
-                sender = text[m.end():colon].strip(LRM + "‏ ").strip()
+                sender = text[m.end():colon].strip(LRM + "\u200f ").strip()
                 content = colon + 2
 
             i = len(self.starts)
@@ -297,7 +297,7 @@ class ChatIndex:
     def message(self, i):
         raw = self.raw(i)
         item = {"i": i, "ts": self.ts[i], "s": self.snd[i]}
-        had_lrm = raw.startswith(LRM) or raw.startswith("‏")
+        had_lrm = raw.startswith(LRM) or raw.startswith("\u200f")
 
         if EDIT_MARK in raw:
             raw = raw.replace(LRM + EDIT_MARK, "").replace(EDIT_MARK, "")
@@ -305,7 +305,7 @@ class ChatIndex:
 
         att = ATTACH_RE.search(raw)
         omit = None if att else OMIT_MARK_RE.search(raw)
-        clean = ATTACH_RE.sub("", raw).replace(LRM, "").replace("‏", "").strip()
+        clean = ATTACH_RE.sub("", raw).replace(LRM, "").replace("\u200f", "").strip()
 
         if att:
             item["k"] = 1
@@ -317,7 +317,7 @@ class ChatIndex:
             item["mt"] = (omit.group(1).lower() + " omitted") if omit else clean
             if omit:                     # anything else on the line is a caption
                 caption = OMIT_MARK_RE.sub("", raw)
-                caption = caption.replace(LRM, "").replace("‏", "").strip()
+                caption = caption.replace(LRM, "").replace("\u200f", "").strip()
                 if caption:
                     item["t"] = caption
         elif DELETED_RE.match(clean):

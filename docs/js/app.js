@@ -1,13 +1,13 @@
 // UI: sidebar, chat rendering, scrolling, search, calendar, lightbox.
-// Data access goes exclusively through a session (see session.js), so the UI
-// is identical in server mode and fully-client-side mode.
+// Chat data flows exclusively through a session (see session.js), so the UI
+// is identical in server mode and fully-client-side mode; the zip module is
+// touched directly only to sniff files during folder ingestion.
 
 import {
   $, CHUNK, PALETTE, esc, fmtSize, dayOf, fmtTime, fmtDay, toast,
-  avatarFor, linkify, markify, emojiOnly, MONTHS,
+  avatarFor, linkify, markify, emojiOnly, MONTHS, api,
 } from "./util.js";
 import { serverSession, localSession } from "./session.js";
-import { api } from "./util.js";
 import { LocalZip } from "./zip.js";
 
 const state = {
@@ -32,6 +32,8 @@ async function initApp(){
     $("sideFoot").textContent = state.archives.length
       ? state.archives.length + " archive" + (state.archives.length>1?"s":"") + " found · served straight from the zips"
       : "No WhatsApp export .zip files found in this folder.";
+    $("helpStep5").innerHTML = "Drop the <b>.zip</b> into the folder this server scans — " +
+      "it appears in the sidebar after a refresh.";
   } else {
     $("emptyText").innerHTML = "WhatsApp filling up your phone? Export your chats, keep the " +
       "<b>.zip</b> files on a computer or drive, and read them here anytime — photos, videos and " +
