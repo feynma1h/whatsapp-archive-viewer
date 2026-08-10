@@ -7,6 +7,12 @@ Read your WhatsApp export `.zip` files in a familiar chat-style web UI —
 > WhatsApp or Meta. It only reads the export files WhatsApp already lets you
 > save from your own chats.
 
+WhatsApp chats — especially their photos and videos — quietly eat tens of
+gigabytes of phone storage. The workflow this project exists for: export the
+chats you want to keep, park the zips on a computer or external drive, check
+they open here, and reclaim the space on your phone knowing the conversations
+are still a double-click away.
+
 Works in two modes with the same single page:
 
 | | Local server mode | Web (static) mode |
@@ -29,6 +35,20 @@ Works in two modes with the same single page:
 - **Repairs damaged exports**: some WhatsApp zips have a truncated index that
   hides the newest media and even `_chat.txt` from normal tools — the viewer
   detects this and recovers the lost entries (in both modes)
+
+## Creating an export (iPhone)
+
+1. In WhatsApp, open the chat and tap its **name** at the top.
+2. Scroll to the bottom and tap **Export Chat**.
+3. Choose **Attach Media** (photos, videos and voice notes included) or
+   **Without Media** (text only — a small file).
+4. Save the resulting `.zip`: AirDrop it to your computer, or *Save to Files*
+   and copy it over later.
+5. Open it with this viewer — either mode.
+
+Before deleting anything from your phone, open the export here and skim it:
+media WhatsApp shows as *"omitted"* placeholders was not included in the zip
+and can't be recovered from it. Android's export format is not parsed yet.
 
 ## Run locally (server mode)
 

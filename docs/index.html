@@ -36,6 +36,7 @@
       </div>
       <p id="emptyNote">Heads-up: when picking a folder, your browser may label it
         "upload" — nothing ever leaves your device.</p>
+      <button id="helpLink">How do I export a chat from WhatsApp?</button>
       <p id="emptyLegal">Unofficial open-source tool — not affiliated with WhatsApp or Meta.
         <a href="https://github.com/feynma1h/whatsapp-archive-viewer" target="_blank"
            rel="noopener">Source code on GitHub</a></p>
@@ -93,6 +94,30 @@
     <button id="lbClose" title="Close">✕</button>
   </div>
   <div id="lbBody"></div>
+</div>
+<div id="helpOverlay">
+  <div id="helpCard">
+    <div class="helpHead">
+      <h3>Export a chat from WhatsApp</h3>
+      <button id="helpClose" title="Close">✕</button>
+    </div>
+    <ol>
+      <li>On your iPhone, open the chat and tap its <b>name</b> at the top.</li>
+      <li>Scroll to the bottom and tap <b>Export Chat</b>.</li>
+      <li>Choose <b>Attach Media</b> to include photos, videos and voice notes —
+          or <b>Without Media</b> for a small text-only file.</li>
+      <li>Save the <b>.zip</b> it produces: AirDrop it to your computer, or use
+          <b>Save to Files</b> and copy it over later.</li>
+      <li>Open it here — <b>Choose export .zip files</b>, or just drag it in.</li>
+    </ol>
+    <p class="helpTip"><b>Freeing up your phone:</b> once an export opens correctly
+      here, you can clear that chat's media on the phone (WhatsApp → Settings →
+      Storage &amp; Data → Manage Storage). Keep the zips somewhere safe — from
+      then on they're your only copy.</p>
+    <p class="helpTip">Anything shown as an <i>"omitted"</i> placeholder was left
+      out by WhatsApp at export time and is not in the zip. Android's export
+      format isn't supported yet.</p>
+  </div>
 </div>
 <div id="dropOverlay"><span>Drop WhatsApp export .zip files to open them</span></div>
 <div id="toast"></div>

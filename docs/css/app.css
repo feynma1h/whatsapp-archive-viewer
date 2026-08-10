@@ -56,6 +56,21 @@
   #emptyNote{display:none; font-size:11.5px; color:var(--sub); opacity:.8; max-width:420px;
         text-align:center}
   #empty .h2sub{font-size:16px; color:var(--sub); font-weight:300}
+  #helpLink{color:var(--link); font-size:13px; padding:4px 8px}
+  #helpLink:hover{text-decoration:underline}
+  #helpOverlay{position:fixed; inset:0; background:rgba(4,10,14,.7); z-index:60;
+        display:none; align-items:center; justify-content:center; padding:20px}
+  #helpOverlay.on{display:flex}
+  #helpCard{background:var(--panel2); border:1px solid var(--border); border-radius:14px;
+        max-width:520px; width:100%; max-height:85vh; overflow-y:auto; padding:20px 22px;
+        box-shadow:0 14px 40px rgba(0,0,0,.55)}
+  .helpHead{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
+  .helpHead h3{font-size:16px; font-weight:600}
+  .helpHead button{color:var(--sub); font-size:17px; padding:4px 9px; border-radius:8px}
+  .helpHead button:hover{background:var(--panel3); color:var(--text)}
+  #helpCard ol{margin:0 0 14px 20px; display:flex; flex-direction:column; gap:8px}
+  #helpCard li{font-size:13.5px; line-height:1.5}
+  .helpTip{font-size:12.5px; color:var(--sub); line-height:1.55; margin-top:10px}
   #emptyLegal{font-size:11.5px; color:var(--sub); opacity:.85; text-align:center; margin-top:10px}
   #emptyLegal a{color:var(--link)}
   #fileInput,#folderInput{display:none}

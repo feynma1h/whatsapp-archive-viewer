@@ -33,9 +33,10 @@ async function initApp(){
       ? state.archives.length + " archive" + (state.archives.length>1?"s":"") + " found · served straight from the zips"
       : "No WhatsApp export .zip files found in this folder.";
   } else {
-    $("emptyText").innerHTML = "Open your WhatsApp export <b>.zip</b> files — or a whole folder " +
-      "of them — to read your chats. Everything runs in your browser: <b>your files never leave " +
-      "this device</b>, nothing is uploaded, and the archives are never modified.";
+    $("emptyText").innerHTML = "WhatsApp filling up your phone? Export your chats, keep the " +
+      "<b>.zip</b> files on a computer or drive, and read them here anytime — photos, videos and " +
+      "voice notes included. Everything runs in your browser: <b>your files never leave this " +
+      "device</b>, nothing is uploaded, and the archives are never modified.";
     $("pickBtn").style.display = "inline-block";
     $("pickFolderBtn").style.display = "inline-block";
     $("emptyNote").style.display = "block";
@@ -764,9 +765,17 @@ $("lbClose").onclick = closeLightbox;
 $("lightbox").addEventListener("click", e => {
   if (e.target === $("lightbox") || e.target === $("lbBody")) closeLightbox();
 });
+/* ---- "how to export" help panel ---- */
+$("helpLink").onclick = () => $("helpOverlay").classList.add("on");
+$("helpClose").onclick = () => $("helpOverlay").classList.remove("on");
+$("helpOverlay").addEventListener("click", e => {
+  if (e.target === $("helpOverlay")) $("helpOverlay").classList.remove("on");
+});
+
 document.addEventListener("keydown", e => {
   if (e.key === "Escape"){
-    if ($("lightbox").classList.contains("on")) closeLightbox();
+    if ($("helpOverlay").classList.contains("on")) $("helpOverlay").classList.remove("on");
+    else if ($("lightbox").classList.contains("on")) closeLightbox();
     else if ($("calPanel").classList.contains("on")) closeCal();
     else if ($("searchbar").classList.contains("on")) closeSearch();
   }
