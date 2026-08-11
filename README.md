@@ -34,6 +34,8 @@ Works in two modes with the same single page:
 - Smooth reading in huge chats: messages load in pages, media loads lazily
   (videos get first-frame thumbnails), and scroll position is held steady
   while media streams in
+- Comfortable on any screen: phones get a chat-list ⇄ conversation flow
+  with back navigation, tablets and desktops the split view
 - **Repairs damaged exports**: some WhatsApp zips have a truncated index that
   hides the newest media and even `_chat.txt` from normal tools — the viewer
   detects this and recovers the lost entries (in both modes)

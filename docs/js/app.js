@@ -27,8 +27,11 @@ async function initApp(){
   state.serverMode = !!(server && server.archives);
   if (state.serverMode){
     state.archives = server.archives;
-    $("emptyText").innerHTML = "Select a chat on the left to start reading. Everything is read " +
-      "straight out of your export <b>.zip</b> files — nothing is extracted and the archives are never modified.";
+    $("emptyText").innerHTML = state.archives.length
+      ? "Select a chat to start reading. Everything is read straight out of your export " +
+        "<b>.zip</b> files — nothing is extracted and the archives are never modified."
+      : "No export .zip files found. Put your WhatsApp export zips in the folder the " +
+        "server scans (its path is printed in the terminal) and reload this page.";
     $("sideFoot").textContent = state.archives.length
       ? state.archives.length + " archive" + (state.archives.length>1?"s":"") + " found · served straight from the zips"
       : "No WhatsApp export .zip files found in this folder.";
@@ -52,6 +55,8 @@ async function initApp(){
   if (hit) openChat(hit);
 }
 function renderChatList(){
+  // phones show the landing screen instead of an empty chat list
+  $("app").classList.toggle("noArchives", !state.archives.length);
   const f = $("filter").value.trim().toLowerCase();
   const box = $("chats"); box.innerHTML = "";
   for (const a of state.archives){
@@ -199,6 +204,7 @@ async function openChat(a){
   const token = ++state.openToken;
   state.current = a; renderChatList();
   location.hash = a.id;
+  $("app").classList.add("chatOpen");
   $("empty").style.display = "none";
   $("chatview").classList.add("on");
   closeSearch(true);
@@ -257,6 +263,39 @@ $("meSelect").addEventListener("change", e => {
   localStorage.setItem("me:" + state.current.id, state.me);
   if (state.me) localStorage.setItem("me", state.me);
   rerenderAll();
+});
+
+/* ---- leaving a chat ----
+   Reached from the header back button (phones) or the browser's own
+   back/forward — openChat pushes the chat id onto the hash, so history
+   already distinguishes list and chat. */
+function closeChat(){
+  state.openToken++;                     // cancels any open still in flight
+  if (state.session){ state.session.close(); state.session = null; }
+  state.current = null; state.meta = null;
+  state.chunks.clear(); state.byIndex.clear(); state.loadingChunks.clear();
+  msgsEl.innerHTML = "";
+  closeSearch(true); closeCal();
+  stickBottom = false; anchorIdx = null;
+  $("dateFloat").classList.remove("on");
+  $("toBottom").classList.remove("on");
+  $("spin").classList.remove("on");
+  $("chatview").classList.remove("on");
+  $("empty").style.display = "";
+  $("app").classList.remove("chatOpen");
+  renderChatList();
+}
+$("btnBack").onclick = () => {
+  closeChat();
+  // swap this entry for a hash-less one so back doesn't re-open the chat
+  history.replaceState(null, "", location.pathname + location.search);
+};
+window.addEventListener("hashchange", () => {
+  const id = location.hash.slice(1);
+  if (state.current && state.current.id === id) return;
+  const hit = state.archives.find(a => a.id === id);
+  if (hit) openChat(hit);
+  else if (state.current) closeChat();
 });
 
 /* ==================== chunk loading & rendering ==================== */
@@ -379,7 +418,7 @@ function mediaHTML(m, meta){
         onclick="openLightbox('${enc}',${m.i})" onerror="mediaFail(this)"
         alt=""></div>${cap}<div class="btext">${meta}</div>`;
   if (["mp4","mov","3gp"].includes(ext))
-    return `<div class="mediaBox"><video class="vid" controls preload="metadata"
+    return `<div class="mediaBox"><video class="vid" controls preload="metadata" playsinline
         data-m="${enc}" onerror="mediaFail(this)"></video></div>${cap}<div class="btext">${meta}</div>`;
   if (["opus","ogg","mp3","m4a","aac","wav"].includes(ext))
     return `<div>🎤<audio controls preload="none" data-m="${enc}"
@@ -547,7 +586,10 @@ scroller.addEventListener("scroll", async () => {
   const dist = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
   // only user-driven scrolling may change follow-bottom / release the anchor
   if (performance.now() >= autoScrollUntil){ stickBottom = dist < 60; anchorIdx = null; }
-  if (scrollbarDrag || performance.now() < userScrollUntil) updateDatePill();
+  if (scrollbarDrag || performance.now() < userScrollUntil){
+    userScrollUntil = performance.now() + 400;   // touch momentum renews the window
+    updateDatePill();
+  }
   $("toBottom").classList.toggle("on", dist > 900);
   if (scrollBusy) return;
   scrollBusy = true;
@@ -733,6 +775,9 @@ function gotoResult(){
 }
 $("qPrev").onclick = () => stepResult(-1);
 $("qNext").onclick = () => stepResult(1);
+// touch keyboards have no Shift+Enter — the ↑/↓ buttons step through results
+if (matchMedia("(pointer:coarse)").matches)
+  $("q").placeholder = "Search within chat…";
 
 /* ========================== lightbox ========================== */
 let lbName = null;
@@ -749,7 +794,7 @@ function openLightbox(enc, idx){
     let el;
     if (/\.(mp4|mov|3gp)$/.test(name.toLowerCase())){
       el = document.createElement("video");
-      el.controls = true; el.autoplay = true;
+      el.controls = true; el.autoplay = true; el.playsInline = true;
     } else {
       el = document.createElement("img");
     }

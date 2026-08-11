@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111b21">
 <title>Archive Viewer for WhatsApp Exports</title>
 <meta name="google-site-verification" content="fkCT8b2eSjW59FQ9j6c04YgMO0lx-UGEXTHbY77YkdU">
 <meta name="description" content="Open-source, fully client-side viewer for WhatsApp chat export .zip files. Nothing is uploaded — your files stay on your device. Unofficial tool; not affiliated with WhatsApp or Meta.">
@@ -10,7 +11,7 @@
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-<div id="app">
+<div id="app" class="noArchives">
   <div id="side">
     <header>
       <span class="logo"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></span><h1>Archive Viewer</h1>
@@ -46,6 +47,9 @@
 
     <div id="chatview">
       <div id="head">
+        <button id="btnBack" title="Back to chats" aria-label="Back to chats">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M14.5 5l-7 7 7 7"/></svg>
+        </button>
         <div class="avatar" id="hAvatar"></div>
         <div class="cmeta">
           <div class="cname" id="hName"></div>
@@ -82,7 +86,9 @@
       </div>
       <div id="spin"><div class="loader"></div><div id="spinText">Opening chat…</div></div>
       <button id="toBottom" title="Jump to latest">⬇</button>
-      <div id="readonly">🔒 Read-only — your export files are never modified. Unofficial tool, not affiliated with WhatsApp.</div>
+      <div id="readonly"><span class="full">🔒 Read-only — your export files are never modified.
+        Unofficial tool, not affiliated with WhatsApp.</span><span class="brief">🔒 Read-only ·
+        unofficial tool, not affiliated with WhatsApp</span></div>
     </div>
   </div>
 </div>
