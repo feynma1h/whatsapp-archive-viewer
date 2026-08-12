@@ -7,14 +7,14 @@
 <title>Archive Viewer for WhatsApp Exports</title>
 <meta name="google-site-verification" content="fkCT8b2eSjW59FQ9j6c04YgMO0lx-UGEXTHbY77YkdU">
 <meta name="description" content="Open-source, fully client-side viewer for WhatsApp chat export .zip files. Nothing is uploaded — your files stay on your device. Unofficial tool; not affiliated with WhatsApp or Meta.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='7' fill='%2300a884'/><path fill='white' d='M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z'/><circle cx='8.6' cy='11.6' r='1' fill='%2300a884'/><circle cx='12' cy='11.6' r='1' fill='%2300a884'/><circle cx='15.4' cy='11.6' r='1' fill='%2300a884'/></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='4.4' y='2.9' width='7.2' height='4.9' rx='1.9' fill='%2300A884'/%3E%3Ccircle cx='6.3' cy='5.35' r='0.75' fill='%23111B21'/%3E%3Ccircle cx='8' cy='5.35' r='0.75' fill='%23111B21'/%3E%3Ccircle cx='9.7' cy='5.35' r='0.75' fill='%23111B21'/%3E%3Cpath d='M3.4 8.1 V12 Q3.4 13.3 4.7 13.3 H11.3 Q12.6 13.3 12.6 12 V8.1' fill='none' stroke='%23111B21' stroke-width='1.5'/%3E%3Cpath d='M2.5 8.1 H13.5' stroke='%23111B21' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <div id="app" class="noArchives">
   <div id="side">
     <header>
-      <span class="logo"><svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></span><h1>Archive Viewer</h1>
+      <span class="logo"><svg viewBox="0 0 16 16" width="27" height="27" aria-hidden="true"><rect x="4.4" y="2.9" width="7.2" height="4.9" rx="1.9" fill="var(--accent)"/><circle cx="6.3" cy="5.35" r="0.75" fill="var(--panel)"/><circle cx="8" cy="5.35" r="0.75" fill="var(--panel)"/><circle cx="9.7" cy="5.35" r="0.75" fill="var(--panel)"/><path d="M3.4 8.1 V12 Q3.4 13.3 4.7 13.3 H11.3 Q12.6 13.3 12.6 12 V8.1" fill="none" stroke="var(--text)" stroke-width="1.5"/><path d="M2.5 8.1 H13.5" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"/></svg></span><h1>Archive Viewer</h1>
       <span class="tag">read-only</span>
     </header>
     <div id="filterWrap">
@@ -28,7 +28,7 @@
 
   <div id="main">
     <div id="empty">
-      <div class="big"><svg viewBox="0 0 24 24" width="88" height="88" aria-hidden="true"><rect width="24" height="24" rx="7" fill="var(--accent)"/><path fill="#fff" d="M12 5.2c-4.3 0-7.8 2.9-7.8 6.4 0 1.6.7 3 1.9 4.1-.1 1-.5 1.9-1.2 2.6-.2.2 0 .5.2.5 1.4 0 2.6-.5 3.5-1.1.9.3 2 .5 3.4.5 4.3 0 7.8-2.9 7.8-6.4S16.3 5.2 12 5.2z"/><circle cx="8.6" cy="11.6" r="1" fill="var(--accent)"/><circle cx="12" cy="11.6" r="1" fill="var(--accent)"/><circle cx="15.4" cy="11.6" r="1" fill="var(--accent)"/></svg></div>
+      <div class="big"><svg viewBox="0 0 16 16" width="88" height="88" aria-hidden="true"><rect x="4.4" y="2.9" width="7.2" height="4.9" rx="1.9" fill="var(--accent)"/><circle cx="6.3" cy="5.35" r="0.75" fill="var(--panel)"/><circle cx="8" cy="5.35" r="0.75" fill="var(--panel)"/><circle cx="9.7" cy="5.35" r="0.75" fill="var(--panel)"/><path d="M3.4 8.1 V12 Q3.4 13.3 4.7 13.3 H11.3 Q12.6 13.3 12.6 12 V8.1" fill="none" stroke="var(--text)" stroke-width="1.5"/><path d="M2.5 8.1 H13.5" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
       <h2>Archive Viewer <span class="h2sub">for WhatsApp exports</span></h2>
       <p id="emptyText">Loading…</p>
       <div id="pickRow">
