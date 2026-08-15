@@ -79,6 +79,19 @@
   #dropOverlay span{background:var(--panel2); color:var(--text); padding:14px 26px;
         border-radius:12px; font-size:16px}
 
+  /* shown while a phone or tablet hands over a picked file — that is a full
+     copy of the archive, and it can take minutes with no signal of its own */
+  #prepOverlay{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:90;
+        display:none; align-items:center; justify-content:center; padding:20px}
+  #prepOverlay.on{display:flex}
+  .prepBox{background:var(--panel2); color:var(--text); padding:22px 24px;
+        border-radius:14px; max-width:420px; text-align:center}
+  .prepTitle{font-size:17px; font-weight:600; margin-bottom:8px}
+  .prepBox p{color:var(--sub); font-size:13.5px; line-height:1.5; margin:0 0 14px}
+  .prepTime{font:22px ui-monospace,monospace; color:var(--accent); margin-bottom:14px}
+  #prepCancel{background:var(--panel); color:var(--text); border:1px solid var(--border);
+        padding:9px 18px; border-radius:9px; font-size:14px; cursor:pointer}
+
   #chatview{flex:1; display:none; flex-direction:column; min-height:0}
   #chatview.on{display:flex}
 

@@ -24,7 +24,11 @@ export function serverSession(archive, meta){
 }
 
 const localOpen = new Map();          // archive id -> {zip, index, urls, urlBytes}
-const URL_CACHE_BYTES = 500 * 1024 * 1024;
+// Decompressed media is held as object URLs. Phones and tablets get a much
+// smaller budget: a mobile browser discards a tab that leans on memory, and
+// re-reading a photo from the zip costs milliseconds.
+const URL_CACHE_BYTES =
+  matchMedia("(pointer:coarse)").matches ? 120 * 1024 * 1024 : 500 * 1024 * 1024;
 
 export async function localSession(archive, progress){
   let box = localOpen.get(archive.id);

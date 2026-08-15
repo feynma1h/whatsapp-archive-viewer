@@ -154,10 +154,69 @@ async function traverseEntry(entry, path, out){
   }
 }
 
-$("pickBtn").onclick = $("addBtn").onclick = () => $("fileInput").click();
-$("pickFolderBtn").onclick = $("addFolderBtn").onclick = () => $("folderInput").click();
-$("fileInput").addEventListener("change", e => { addLocalArchives(e.target.files); e.target.value = ""; });
+/* ---- picking files ----
+   A phone browser hands a page the file only after copying the whole archive
+   into its own storage, and says nothing while it does: a multi-gigabyte
+   export spends minutes looking like a dead button. Every impatient re-tap
+   starts *another* full copy, which is what eventually fills the device up
+   and gets the tab discarded — so the wait is both announced and made
+   exclusive. Desktop browsers hand the file over as it is and need neither.
+
+   The notice is kept off pointer-precise devices because there is no way to
+   tell "still choosing" from "already copying": the window stays blurred
+   across both, and focus comes back only once the file itself arrives. On a
+   desktop that would park the notice behind an open file dialog. */
+const SLOW_PICK = matchMedia("(pointer:coarse)").matches;
+let pickPending = false, prepTimer = null, prepShow = null,
+    prepEscape = null, prepGuard = null;
+function beginPick(input){
+  if (SLOW_PICK){
+    if (pickPending) return;
+    pickPending = true;
+    const t0 = Date.now();
+    const tick = () => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      $("prepTime").textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    };
+    tick();
+    prepShow = setTimeout(() => $("prepOverlay").classList.add("on"), 400);
+    prepTimer = setInterval(tick, 1000);
+    // the way out stays hidden at first: it sits where the button the user
+    // just pressed was, and an impatient double-tap must not dismiss the very
+    // wait it is there to explain
+    $("prepCancel").style.display = "none";
+    prepEscape = setTimeout(() => { $("prepCancel").style.display = ""; }, 15000);
+    // a browser that reports neither a file nor a dismissal must not be able
+    // to leave the button wedged shut
+    prepGuard = setTimeout(endPick, 600000);
+  }
+  input.click();
+}
+function endPick(){
+  pickPending = false;
+  clearTimeout(prepShow); clearInterval(prepTimer);
+  clearTimeout(prepEscape); clearTimeout(prepGuard);
+  $("prepOverlay").classList.remove("on");
+}
+$("prepCancel").onclick = () => {
+  endPick();
+  toast("The copy carries on in the background — the chat may still appear");
+};
+
+$("pickBtn").onclick = $("addBtn").onclick = () => beginPick($("fileInput"));
+$("pickFolderBtn").onclick = $("addFolderBtn").onclick = () => beginPick($("folderInput"));
+for (const id of ["fileInput", "folderInput"])
+  $(id).addEventListener("cancel", endPick);
+$("fileInput").addEventListener("change", e => {
+  endPick();
+  const files = [...e.target.files];
+  e.target.value = "";
+  // a copy that failed part-way reports success with nothing attached
+  if (!files.length) return toast("The browser returned no file — please try again");
+  addLocalArchives(files);
+});
 $("folderInput").addEventListener("change", e => {
+  endPick();
   const entries = [...e.target.files].map(f => {
     const parts = (f.webkitRelativePath || "").split("/");
     return {file: f, rel: parts.slice(1, -1).join("/")};
