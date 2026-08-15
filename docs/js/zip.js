@@ -33,7 +33,7 @@ export class LocalZip {
     await this.parseIndex();
     if (this.declared > this.entries.size){
       progress && progress("Archive index is damaged — recovering lost entries…");
-      try { await this.salvage(); } catch (err) { /* keep what we have */ }
+      try { await this.salvage(progress); } catch (err) { /* keep what we have */ }
     }
   }
 
@@ -90,12 +90,17 @@ export class LocalZip {
     this.declared = count;
   }
 
-  async salvage(){
+  async salvage(progress){
     let start = 0;
     for (const en of this.entries.values())
       start = Math.max(start, en.hoff + (en.csize || 0));
+    const span = Math.max(1, this.cdOff - start);
     let off = await this.findSig(start, this.cdOff);
     while (off !== null && off + 30 < this.cdOff){
+      // recovery walks the whole archive, so on a multi-gigabyte export this
+      // is a long job — say so rather than sitting on a silent spinner
+      progress && progress("Recovering lost entries… " +
+        Math.min(99, Math.floor((off - start) / span * 100)) + "%");
       const hdr = new DataView(await this.bytes(off, 30));
       if (hdr.getUint32(0, true) !== 0x04034b50) return;
       const flags = hdr.getUint16(6, true), method = hdr.getUint16(8, true);
@@ -104,7 +109,10 @@ export class LocalZip {
       const nlen = hdr.getUint16(26, true), elen = hdr.getUint16(28, true);
       const name = td.decode(new Uint8Array(await this.bytes(off+30, nlen)));
       const dataOff = off + 30 + nlen + elen;
-      if (method === 8 && (csize === 0 || (flags & 8))){
+      // "sizes written later" applies to stored entries too, not just deflated
+      // ones — without this their csize stays 0 and they read back empty
+      const deferred = (flags & 8) !== 0;
+      if ((method === 8 && (csize === 0 || deferred)) || (method === 0 && deferred)){
         const d = await this.findDescriptor(dataOff, this.cdOff);
         if (!d) return;
         csize = d.csize; usize = d.usize;
@@ -117,16 +125,24 @@ export class LocalZip {
     }
   }
 
+  // Usually called with `start` already sitting on the next header, so it
+  // opens with a small read and only widens if the signature isn't right
+  // there — reading 8MB to look at four bytes is most of the cost of walking
+  // a large archive.
   async findSig(start, end){
-    const CH = 8 << 20;
-    let tail = new Uint8Array(0), pos = start;
+    const MAX = 8 << 20;
+    let tail = new Uint8Array(0), pos = start, ch = 65536;
     while (pos < end){
-      const chunk = new Uint8Array(await this.bytes(pos, Math.min(CH, end - pos)));
+      const chunk = new Uint8Array(await this.bytes(pos, Math.min(ch, end - pos)));
       if (!chunk.length) return null;
+      ch = Math.min(MAX, ch * 4);
       const buf = new Uint8Array(tail.length + chunk.length);
       buf.set(tail); buf.set(chunk, tail.length);
-      for (let i = 0; i + 4 <= buf.length; i++)
-        if (buf[i] === 0x50 && buf[i+1] === 0x4b && buf[i+2] === 3 && buf[i+3] === 4)
+      // hop between 0x50 bytes with the engine's own search rather than
+      // testing every offset in JS — the scan covers the whole archive
+      for (let i = buf.indexOf(0x50); i >= 0 && i + 4 <= buf.length;
+           i = buf.indexOf(0x50, i + 1))
+        if (buf[i+1] === 0x4b && buf[i+2] === 3 && buf[i+3] === 4)
           return pos - tail.length + i;
       tail = buf.slice(-3);
       pos += chunk.length;
@@ -137,20 +153,36 @@ export class LocalZip {
   // A data descriptor's csize field points exactly back to the entry's data
   // start — a self-validating way to find where a "sizes written later"
   // entry ends without decompressing it.
+  //
+  // Signed descriptors are looked for first, in their own pass: they carry a
+  // marker the engine can search for natively, which is far cheaper than
+  // inspecting every offset, and they are what real exports write. The
+  // unsigned form has no marker, so it only gets the exhaustive pass if the
+  // cheap one comes up empty.
   async findDescriptor(dataOff, limit){
     const CH = 8 << 20, OVER = 28;
+
     for (let base = dataOff; base < limit; base += CH - OVER){
-      const ab = await this.bytes(base, Math.min(CH, limit - base));
-      const dv = new DataView(ab);
-      const n = ab.byteLength - 24;
+      const u = new Uint8Array(await this.bytes(base, Math.min(CH, limit - base)));
+      const dv = new DataView(u.buffer);
+      for (let i = u.indexOf(0x50); i >= 0 && i + 16 <= u.length;
+           i = u.indexOf(0x50, i + 1)){
+        if (dv.getUint32(i, true) !== 0x08074b50) continue;
+        const dist = base + i - dataOff;
+        if (dv.getUint32(i+8, true) === dist && await this.validNext(base + i + 16))
+          return {csize: dist, usize: dv.getUint32(i+12, true)};
+      }
+    }
+
+    for (let base = dataOff; base < limit; base += CH - OVER){
+      const u = new Uint8Array(await this.bytes(base, Math.min(CH, limit - base)));
+      const dv = new DataView(u.buffer);
+      const n = u.length - 12;
       for (let i = 0; i < n; i++){
-        const abs = base + i, dist = abs - dataOff;
-        if (dv.getUint32(i, true) === 0x08074b50){                    // with signature
-          if (dv.getUint32(i+8, true) === dist && await this.validNext(abs + 16))
-            return {csize: dist, usize: dv.getUint32(i+12, true)};
-        }
-        if (dist > 0 && dv.getUint32(i+4, true) === dist &&           // without signature
-            await this.validNext(abs + 12))
+        const dist = base + i - dataOff;
+        // one-byte check first: the full read only happens on a real candidate
+        if (dist <= 0 || u[i+4] !== (dist & 0xff)) continue;
+        if (dv.getUint32(i+4, true) === dist && await this.validNext(base + i + 12))
           return {csize: dist, usize: dv.getUint32(i+8, true)};
       }
     }
