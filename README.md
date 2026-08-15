@@ -134,13 +134,16 @@ Browser support: Chrome/Edge/Firefox and Safari 16.4+ (needs native
   in Chrome (a download chip is offered instead).
 - In web mode you re-pick the files each visit — by design, the page holds
   no file access once closed.
-- On iPhone and iPad, Safari copies the whole `.zip` into its own storage
-  before handing it to the page, and reports nothing while it does. A
-  multi-gigabyte export therefore sits on a "getting the file" notice for a
-  while before reading even starts, needs free space equal to its own size,
-  and must be downloaded from iCloud Drive first if it is not already on the
-  device. Reading itself is unaffected by size: the archive is read in place,
-  a slice at a time, and 3–5 GB exports open fine once handed over.
+- On iPhone and iPad, tapping **Open** on a large export leaves you in the
+  Files picker for a while — around a minute for 2 GB — before Safari comes
+  back with the chat already loaded. Safari is copying the whole `.zip` into
+  its own storage, which it must finish before a page may read a byte, and it
+  keeps its own picker on screen throughout, so the page cannot report the
+  wait or even be reached during it. Such an export also needs free space
+  equal to its own size, and must be downloaded out of iCloud Drive first if
+  it is not already on the device. Reading itself is unaffected by size: the
+  archive is read in place, a slice at a time, and 3–5 GB exports open fine
+  once handed over.
 
 ## License
 
