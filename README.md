@@ -1,7 +1,7 @@
 # Archive Viewer for WhatsApp Exports
 
 Read your WhatsApp export `.zip` files in a familiar chat-style web UI —
-**read-only, zero extraction, and (in the web version) zero upload**.
+**read-only, zero extraction, zero upload**.
 
 > **Unofficial tool** — not affiliated with, endorsed by, or connected to
 > WhatsApp or Meta. It only reads the export files WhatsApp already lets you
@@ -13,14 +13,9 @@ chats you want to keep, park the zips on a computer or external drive, check
 they open here, and reclaim the space on your phone knowing the conversations
 are still a double-click away.
 
-Works in two modes with the same single page:
-
-| | Local server mode | Web (static) mode |
-|---|---|---|
-| How | `python3 server.py` next to your archives | Host `docs/` anywhere static (GitHub Pages) |
-| Archive discovery | scans a folder for `.zip` files (its parent, or `--root`) | you pick/drop files or folders from your device |
-| Data flow | localhost only | **files never leave the browser** |
-| Needs | Python 3 (stdlib only) | a modern browser, nothing else |
+Everything runs in the browser. Host `docs/` anywhere static (GitHub Pages
+does nicely), open it, and pick or drop your export zips — the files never
+leave your device, and there is no server, no build step and no dependency.
 
 ## Features
 
@@ -38,7 +33,7 @@ Works in two modes with the same single page:
   with back navigation, tablets and desktops the split view
 - **Repairs damaged exports**: some WhatsApp zips have a truncated index that
   hides the newest media and even `_chat.txt` from normal tools — the viewer
-  detects this and recovers the lost entries (in both modes)
+  detects this and recovers the lost entries
 
 ## Creating an export (iPhone)
 
@@ -48,28 +43,11 @@ Works in two modes with the same single page:
    **Without Media** (text only — a small file).
 4. Save the resulting `.zip`: AirDrop it to your computer, or *Save to Files*
    and copy it over later.
-5. Open it with this viewer — either mode.
+5. Open it with this viewer.
 
 Before deleting anything from your phone, open the export here and skim it:
 media WhatsApp shows as *"omitted"* placeholders was not included in the zip
 and can't be recovered from it. Android's export format is not parsed yet.
-
-## Run locally (server mode)
-
-Place this repository folder next to your export zips, then from the folder
-that contains them (any layout of subfolders is fine):
-
-```bash
-python3 whatsapp-archive-viewer/server.py
-```
-
-Or run it from anywhere and point it at the folder holding your exports:
-
-```bash
-python3 server.py --root ~/path/to/your/exports
-```
-
-Opens http://127.0.0.1:8471.
 
 ## Repository layout
 
@@ -80,25 +58,29 @@ docs/               the deployable site (GitHub Pages serves this folder)
   js/util.js        shared helpers & constants
   js/chatparse.js   chat-text parser + message classifier
   js/zip.js         zip reader: central directory, zip64, damaged-index salvage
-  js/session.js     data layer (server mode / fully-local mode)
+  js/session.js     data layer: opens an archive, serves messages and media
   js/app.js         UI: rendering, scrolling, search, calendar, lightbox
-server.py           local HTTP server (entry point)
-archive.py          server-side domain logic (zip access, salvage, parsing)
-tests/              stdlib unittest suite + synthetic export fixtures
+tests/fixtures.js   builds synthetic export zips (normal, damaged, zip64)
+tests/*.test.js     the suite, run by node's own test runner
+package.json        marks the repo as ES modules; no dependencies
 ```
 
 Plain ES modules, no build step, no dependencies — what's in the repo is what
 runs. (Consequence: opening `index.html` via `file://` won't work; serve it
-over HTTP — `server.py`, any static server, or GitHub Pages.)
+over HTTP — any static server, or GitHub Pages.)
 
 ## Tests
 
 ```bash
-python3 -m unittest discover tests
+node --test
 ```
 
-covers parsing/classification of every message kind, date-order detection,
-zip64 handling, and recovery from truncated-index archives.
+Needs Node 20 or newer and nothing else. Covers classification of every
+message kind, day-first vs month-first date detection, search, zip64, and
+recovery from truncated-index archives — including the two cases that make a
+damaged export unreadable: a `_chat.txt` whose data descriptor sits flush
+against the central directory, and stored entries whose sizes are written
+after their data.
 
 ## Deploy the web version
 
@@ -132,8 +114,8 @@ Browser support: Chrome/Edge/Firefox and Safari 16.4+ (needs native
 - Times are shown exactly as written in the export (no timezone conversion).
 - `.opus` voice notes may not play in Safari; `.heic` photos may not render
   in Chrome (a download chip is offered instead).
-- In web mode you re-pick the files each visit — by design, the page holds
-  no file access once closed.
+- You re-pick the files each visit — by design, the page holds no file access
+  once closed.
 - On iPhone and iPad, tapping **Open** on a large export leaves you in the
   Files picker for a while — around a minute for 2 GB — before Safari comes
   back with the chat already loaded. Safari is copying the whole `.zip` into

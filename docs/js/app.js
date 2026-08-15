@@ -1,59 +1,22 @@
 // UI: sidebar, chat rendering, scrolling, search, calendar, lightbox.
-// Chat data flows exclusively through a session (see session.js), so the UI
-// is identical in server mode and fully-client-side mode; the zip module is
-// touched directly only to sniff files during folder ingestion.
+// Chat data flows exclusively through a session (see session.js); the zip
+// module is touched directly only to sniff files during folder ingestion.
 
 import {
   $, CHUNK, PALETTE, esc, fmtSize, dayOf, fmtTime, fmtDay, toast,
-  avatarFor, linkify, markify, emojiOnly, MONTHS, api,
+  avatarFor, linkify, markify, emojiOnly, MONTHS,
 } from "./util.js";
-import { serverSession, localSession } from "./session.js";
+import { localSession } from "./session.js";
 import { LocalZip } from "./zip.js";
 
 const state = {
   archives: [], current: null, session: null, meta: null, me: "",
   chunks: new Map(), byIndex: new Map(), loadingChunks: new Set(),
-  query: "", results: [], rpos: -1, openToken: 0, serverMode: false,
+  query: "", results: [], rpos: -1, openToken: 0,
 };
 const scroller = $("scroller"), msgsEl = $("msgs");
 
-/* ========================== sidebar / modes ========================== */
-async function initApp(){
-  let server = null;
-  try {
-    const r = await fetch("/api/archives");
-    if (r.ok) server = await r.json();
-  } catch (e) {}
-  state.serverMode = !!(server && server.archives);
-  if (state.serverMode){
-    state.archives = server.archives;
-    $("emptyText").innerHTML = state.archives.length
-      ? "Select a chat to start reading. Everything is read straight out of your export " +
-        "<b>.zip</b> files — nothing is extracted and the archives are never modified."
-      : "No export .zip files found. Put your WhatsApp export zips in the folder the " +
-        "server scans (its path is printed in the terminal) and reload this page.";
-    $("sideFoot").textContent = state.archives.length
-      ? state.archives.length + " archive" + (state.archives.length>1?"s":"") + " found · served straight from the zips"
-      : "No WhatsApp export .zip files found in this folder.";
-    $("helpStep5").innerHTML = "Drop the <b>.zip</b> into the folder this server scans — " +
-      "it appears in the sidebar after a refresh.";
-  } else {
-    $("emptyText").innerHTML = "WhatsApp filling up your phone? Export your chats, keep the " +
-      "<b>.zip</b> files on a computer or drive, and read them here anytime — photos, videos and " +
-      "voice notes included. Everything runs in your browser: <b>your files never leave this " +
-      "device</b>, nothing is uploaded, and the archives are never modified.";
-    $("pickBtn").style.display = "inline-block";
-    $("pickFolderBtn").style.display = "inline-block";
-    $("emptyNote").style.display = "block";
-    $("addBtn").style.display = "block";
-    $("addFolderBtn").style.display = "block";
-    $("sideFoot").textContent = "No archives opened yet · everything stays on this device";
-  }
-  renderChatList();
-  const want = location.hash.slice(1);
-  const hit = state.archives.find(a => a.id === want);
-  if (hit) openChat(hit);
-}
+/* ============================= sidebar ============================= */
 function renderChatList(){
   // phones show the landing screen instead of an empty chat list
   $("app").classList.toggle("noArchives", !state.archives.length);
@@ -178,14 +141,12 @@ $("folderInput").addEventListener("change", e => {
   e.target.value = "";
 });
 window.addEventListener("dragover", e => {
-  if (state.serverMode) return;
   e.preventDefault(); $("dropOverlay").style.display = "flex";
 });
 window.addEventListener("dragleave", e => {
   if (e.relatedTarget === null) $("dropOverlay").style.display = "none";
 });
 window.addEventListener("drop", async e => {
-  if (state.serverMode) return;
   e.preventDefault(); $("dropOverlay").style.display = "none";
   // grab entries synchronously — DataTransferItems are gone after an await
   const items = e.dataTransfer.items ? [...e.dataTransfer.items] : [];
@@ -230,13 +191,7 @@ async function openChat(a){
   try{
     if (state.session) state.session.close();
     const progress = msg => { if (token === state.openToken) $("spinText").textContent = msg; };
-    let session;
-    if (state.serverMode){
-      const meta = await api(`/api/chat/${a.id}/meta`);
-      session = serverSession(a, meta);
-    } else {
-      session = await localSession(a, progress);
-    }
+    const session = await localSession(a, progress);
     if (token !== state.openToken) return;
     state.session = session;
     state.meta = session.meta;
@@ -843,4 +798,4 @@ document.addEventListener("keydown", e => {
 /* globals for the inline handlers used in rendered message HTML */
 Object.assign(window, {openLightbox, openDoc, saveDoc, mediaFail});
 
-initApp();
+renderChatList();

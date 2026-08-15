@@ -156,9 +156,8 @@ export class LocalZip {
   //
   // Signed descriptors are looked for first, in their own pass: they carry a
   // marker the engine can search for natively, which is far cheaper than
-  // inspecting every offset, and they are what real exports write. The
-  // unsigned form has no marker, so it only gets the exhaustive pass if the
-  // cheap one comes up empty.
+  // inspecting every offset. The unsigned form has no marker, so it only gets
+  // the exhaustive pass if the cheap one comes up empty.
   async findDescriptor(dataOff, limit){
     const CH = 8 << 20, OVER = 28;
 

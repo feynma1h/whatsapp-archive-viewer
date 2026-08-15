@@ -30,16 +30,6 @@ export function toast(msg){
   clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = "none", 3500);
 }
 
-export async function api(path){
-  const r = await fetch(path);
-  if (!r.ok){
-    let m = "request failed";
-    try { m = (await r.json()).error || m } catch (e) {}
-    throw new Error(m);
-  }
-  return r.json();
-}
-
 // exports carry no profile pictures, so avatars are neutral colored initials
 export function avatarFor(name, el){
   let hash = 0; for (const c of name) hash = (hash*31 + c.codePointAt(0)) >>> 0;

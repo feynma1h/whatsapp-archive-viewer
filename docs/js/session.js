@@ -1,27 +1,10 @@
-// Data layer. A "session" is one opened chat, with a uniform interface the
-// UI renders against, in either of two modes:
-//   - serverSession: the local Python server scans a folder and serves
-//     messages/media over its HTTP API
-//   - localSession:  a File the user picked, read entirely in the browser
-//     (zip parse + decompression client-side; media as object URLs)
+// Data layer. A "session" is one opened chat: a File the user picked, read
+// entirely in the browser — zip parse and decompression client-side, media
+// handed to the UI as object URLs.
 
-import { api, MIME, extOf } from "./util.js";
+import { MIME, extOf } from "./util.js";
 import { LocalZip } from "./zip.js";
 import { buildChatIndex } from "./chatparse.js";
-
-export function serverSession(archive, meta){
-  const base = `/api/chat/${archive.id}`;
-  return {
-    meta,
-    async messages(start, count){
-      return (await api(`${base}/messages?start=${start}&count=${count}`)).items;
-    },
-    async search(q){ return api(`${base}/search?q=${encodeURIComponent(q)}`); },
-    async mediaURL(name){ return `${base}/media/${encodeURIComponent(name)}`; },
-    async downloadURL(name){ return {url: `${base}/media/${encodeURIComponent(name)}?dl=1`}; },
-    close(){},
-  };
-}
 
 const localOpen = new Map();          // archive id -> {zip, index, urls, urlBytes}
 // Decompressed media is held as object URLs. Phones and tablets get a much

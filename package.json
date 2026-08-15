@@ -1,0 +1,8 @@
+{
+  "name": "whatsapp-archive-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
