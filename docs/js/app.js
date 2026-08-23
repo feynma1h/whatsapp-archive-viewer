@@ -8,6 +8,7 @@ import {
 } from "./util.js";
 import { localSession } from "./session.js";
 import { LocalZip } from "./zip.js";
+import { voiceHTML, primeWaveform, bindVoice, paintVoice } from "./voice.js";
 
 const state = {
   archives: [], current: null, session: null, meta: null, me: "",
@@ -388,8 +389,7 @@ function mediaHTML(m, meta){
     return `<div class="mediaBox"><video class="vid" controls preload="metadata" playsinline
         data-m="${enc}" onerror="mediaFail(this)"></video></div>${cap}<div class="btext">${meta}</div>`;
   if (["opus","ogg","mp3","m4a","aac","wav"].includes(ext))
-    return `<div class="voice">${ICON.mic}<audio controls preload="none" data-m="${enc}"
-        onerror="mediaFail(this)"></audio></div>${cap}<div class="btext">${meta}</div>`;
+    return `${voiceHTML(enc)}${cap}<div class="btext">${meta}</div>`;
   if (ext === "vcf")
     return `<div class="filechip"><span class="fic">${ICON.person}</span><div>
         <div class="fname">${esc(name.replace(/\.vcf$/i,""))}</div>
@@ -416,7 +416,9 @@ const hydrator = new IntersectionObserver(ents => {
     if (en.isIntersecting){ hydrate(en.target); hydrator.unobserve(en.target); }
 }, {root: scroller, rootMargin: "700px 0px"});
 function hydrate(el){
-  const name = decodeURIComponent(el.dataset.m);
+  const voice = el.classList.contains("voice") ? el : null;
+  const media = voice ? voice.querySelector("audio") : el;
+  const name = decodeURIComponent(media.dataset.m);
   const session = state.session;
   session.mediaURL(name).then(u => {
     if (!el.isConnected || state.session !== session) return;
@@ -430,9 +432,10 @@ function hydrate(el){
         if (el.currentTime > 0 && el.currentTime < 0.3) el.currentTime = 0;
       }, {once: true});
     } else {
-      el.src = u;
+      media.src = u;
+      if (voice) primeWaveform(voice, u);
     }
-  }).catch(() => mediaFail(el));
+  }).catch(() => mediaFail(media));
 }
 function openDoc(enc){
   state.session.mediaURL(decodeURIComponent(enc)).then(u => window.open(u, "_blank", "noopener"));
@@ -454,7 +457,7 @@ function mediaFail(el){
   const wrap = document.createElement("div");
   wrap.className = "missing";
   wrap.innerHTML = `${ICON.warn}<span>Can't preview this file${link}</span>`;
-  (el.closest(".mediaBox") || el).replaceWith(wrap);
+  (el.closest(".mediaBox,.voice") || el).replaceWith(wrap);
 }
 function rerenderAll(){
   const anchor = firstVisibleIndex();
@@ -521,11 +524,18 @@ const mediaRO = new ResizeObserver(entries => {
     scroller.scrollTop += delta;
   }
 });
+/* Voice players: their controls are delegated from the message list once,
+   while every freshly rendered chunk gets the players inside it drawn. */
+bindVoice(msgsEl);
 function watchMedia(chunkEl){
   chunkEl.querySelectorAll("img,video,audio").forEach(m => {
     mediaRO.observe(m);
-    if (m.dataset.m && !m.src) hydrator.observe(m);
+    // A voice note's audio element is hidden, and an element with no box is
+    // one the observer can never report as visible, so the player it sits in
+    // is watched in its place.
+    if (m.dataset.m && !m.src) hydrator.observe(m.closest(".voice") || m);
   });
+  paintVoice(chunkEl);
 }
 
 /* floating date pill: shows the date of the topmost visible message while

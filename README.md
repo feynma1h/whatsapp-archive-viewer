@@ -21,8 +21,11 @@ leave your device, and there is no server, no build step and no dependency.
 
 - WhatsApp-style bubbles, day separators, group sender colours, "you" on the
   right (auto-detected, changeable, remembered)
-- Photos, videos, GIFs, stickers, voice notes, documents and contact cards,
-  decompressed straight out of the zip on demand; full-screen lightbox
+- Photos, videos, GIFs, stickers, documents and contact cards, decompressed
+  straight out of the zip on demand; full-screen lightbox
+- Voice notes get a waveform player with tap-to-seek. An export carries no
+  waveform, so the shape is measured from the audio itself as each note
+  comes into view
 - Search (Enter = older, Shift+Enter = newer), calendar jump with
   message-days highlighted, jump-to-latest, and a floating date chip while
   scrolling
@@ -59,6 +62,7 @@ docs/               the deployable site (GitHub Pages serves this folder)
   js/chatparse.js   chat-text parser + message classifier
   js/zip.js         zip reader: central directory, zip64, damaged-index salvage
   js/session.js     data layer: opens an archive, serves messages and media
+  js/voice.js       voice-note player: waveform measurement and transport
   js/app.js         UI: rendering, scrolling, search, calendar, lightbox
 tests/fixtures.js   builds synthetic export zips (normal, damaged, zip64)
 tests/*.test.js     the suite, run by node's own test runner
@@ -113,7 +117,9 @@ Browser support: Chrome/Edge/Firefox and Safari 16.4+ (needs native
   order; 2-digit years are read as 20xx.
 - Times are shown exactly as written in the export (no timezone conversion).
 - `.opus` voice notes may not play in Safari; `.heic` photos may not render
-  in Chrome (a download chip is offered instead).
+  in Chrome (a download chip is offered instead). A browser that plays a
+  voice note but cannot decode it for measurement keeps a working player,
+  with a plain progress bar where the waveform would be.
 - You re-pick the files each visit — by design, the page holds no file access
   once closed.
 - On iPhone and iPad, tapping **Open** on a large export leaves you in the

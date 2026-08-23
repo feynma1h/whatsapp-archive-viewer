@@ -18,7 +18,8 @@ export const ICON = {
   video:   icon(17, '<rect x="3" y="6.5" width="12.5" height="11" rx="2.5"/><path d="M15.5 10.8l5.2-3v8.4l-5.2-3z"/>'),
   blocked: icon(17, '<circle cx="12" cy="12" r="8.2"/><path d="M6.2 6.2l11.6 11.6"/>'),
   warn:    icon(17, '<path d="M12 4.2l9 15.6H3z"/><path d="M12 10.2v4.1"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/>'),
-  mic:     icon(17, '<rect x="9.4" y="2.8" width="5.2" height="10.4" rx="2.6"/><path d="M6 11.2a6 6 0 0 0 12 0M12 17.2v3.5"/>'),
+  play:    icon(20, '<path d="M8.5 5.4l9.6 6.6-9.6 6.6z" fill="currentColor" stroke="none"/>'),
+  pause:   icon(20, '<rect x="8" y="5.4" width="3.1" height="13.2" rx="1" fill="currentColor" stroke="none"/><rect x="13.9" y="5.4" width="3.1" height="13.2" rx="1" fill="currentColor" stroke="none"/>'),
   person:  icon(24, '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.2c0-3.7 3.2-5.6 7.2-5.6s7.2 1.9 7.2 5.6"/>'),
   doc:     icon(24, '<path d="M6.5 3h7.2l4.8 4.8V21H6.5z"/><path d="M13.7 3v4.8h4.8M9.5 12.5h5M9.5 16h5"/>'),
 };
