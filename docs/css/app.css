@@ -102,6 +102,10 @@
         border-radius:50%; color:var(--sub)}
   #head .tools svg{display:block; fill:none; stroke:currentColor; stroke-width:1.7;
         stroke-linecap:round; stroke-linejoin:round}
+  /* icons standing in for emoji: they take the colour of the text they sit in,
+     so a bubble icon never fights the bubble it is drawn on */
+  .icn{display:inline-block; vertical-align:-3px; flex:none; fill:none; stroke:currentColor;
+        stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
   #meSelect{background:var(--panel3); color:var(--text); border:none; border-radius:8px;
         padding:6px 8px; font-size:12.5px; max-width:150px; outline:none}
 
@@ -126,7 +130,10 @@
   #searchbar input{flex:1; background:var(--panel3); border:none; border-radius:8px;
         padding:8px 12px; color:var(--text); outline:none; min-width:0}
   #searchbar .count{font-size:12.5px; color:var(--sub); white-space:nowrap; min-width:70px; text-align:center}
-  #searchbar button{font-size:15px; color:var(--sub); padding:6px 8px; border-radius:8px}
+  #searchbar button{display:flex; align-items:center; justify-content:center; font-size:15px;
+        color:var(--sub); padding:6px 8px; border-radius:8px}
+  #searchbar button svg{display:block; fill:none; stroke:currentColor; stroke-width:1.8;
+        stroke-linecap:round; stroke-linejoin:round}
   #searchbar button:disabled{opacity:.3; cursor:default}
 
   #scroller{flex:1; overflow-y:auto; overflow-anchor:none; overscroll-behavior:contain;
@@ -169,8 +176,8 @@
         color:var(--sub); margin:6px 0 0 10px; user-select:none; white-space:nowrap}
   .row.out .meta{color:#9fd2c6}
   .bubble.deleted .btext{color:var(--sub); font-style:italic}
+  .bubble.deleted .icn{margin-right:5px}
   .call{display:flex; gap:8px; align-items:center; font-size:13.5px; color:var(--sub); padding:3px 2px}
-  .call .ic{font-size:16px}
 
   .bubble .mediaBox{margin:2px 0 2px; border-radius:7px; overflow:hidden; background:#000}
   .bubble img.photo{display:block; max-width:100%; max-height:360px; cursor:pointer; min-width:80px;
@@ -180,9 +187,10 @@
   .row .stickerwrap{background:none; box-shadow:none; padding:2px}
   img.sticker{width:150px; height:150px; object-fit:contain; display:block}
   .bubble audio{width:290px; max-width:100%; display:block; margin:4px 0; height:38px}
+  .voice{display:flex; align-items:center; gap:8px; color:var(--sub)}
   .filechip{display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.18);
         border-radius:8px; padding:10px 12px; margin:2px 0; max-width:320px}
-  .filechip .fic{font-size:24px}
+  .filechip .fic{display:flex; color:var(--sub)}
   .filechip .fname{font-size:13.5px; word-break:break-all; line-height:1.3}
   .filechip a{color:var(--link); font-size:12px; text-decoration:none; cursor:pointer}
   .missing{border:1.5px dashed var(--panel3); border-radius:8px; padding:14px 16px;
@@ -193,12 +201,16 @@
   @keyframes flash{0%,60%{background:rgba(0,168,132,.35); border-radius:9px} 100%{background:none}}
 
   #toBottom{position:absolute; right:22px; bottom:76px; width:42px; height:42px; border-radius:50%;
-        background:var(--panel2); color:var(--sub); font-size:19px; display:none; align-items:center;
+        background:var(--panel2); color:var(--sub); display:none; align-items:center;
         justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.4); z-index:6}
+  #toBottom svg,#lbDl svg{display:block; fill:none; stroke:currentColor; stroke-width:1.8;
+        stroke-linecap:round; stroke-linejoin:round}
   #toBottom.on{display:flex}
   #readonly{background:var(--panel2); color:var(--sub); font-size:12px;
         padding:9px 16px calc(9px + env(safe-area-inset-bottom)); text-align:center;
         border-top:1px solid var(--border)}
+  #readonly .lockIcon{display:inline-block; vertical-align:-2px; margin-right:5px; fill:none;
+        stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
   #readonly .brief{display:none}
 
   /* ---------- lightbox ---------- */

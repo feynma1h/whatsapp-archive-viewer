@@ -85,8 +85,12 @@
       <div id="searchbar">
         <input id="q" placeholder="Search within chat… (Enter for older, Shift+Enter for newer)" autocomplete="off">
         <span class="count" id="qCount"></span>
-        <button id="qPrev" title="Older result">↑</button>
-        <button id="qNext" title="Newer result">↓</button>
+        <button id="qPrev" title="Older result" aria-label="Older result">
+          <svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 19.2V4.8M5.8 11l6.2-6.2 6.2 6.2"/></svg>
+        </button>
+        <button id="qNext" title="Newer result" aria-label="Newer result">
+          <svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 4.8v14.4M5.8 13l6.2 6.2 6.2-6.2"/></svg>
+        </button>
         <button id="qClose" title="Close search">✕</button>
       </div>
       <div id="scroller">
@@ -94,9 +98,11 @@
         <div id="msgs"></div>
       </div>
       <div id="spin"><div class="loader"></div><div id="spinText">Opening chat…</div></div>
-      <button id="toBottom" title="Jump to latest">⬇</button>
-      <div id="readonly"><span class="full">🔒 Read-only — your export files are never modified.
-        Unofficial tool, not affiliated with WhatsApp.</span><span class="brief">🔒 Read-only ·
+      <button id="toBottom" title="Jump to latest" aria-label="Jump to latest">
+        <svg viewBox="0 0 24 24" width="21" height="21"><path d="M12 4.8v14.4M5.8 13l6.2 6.2 6.2-6.2"/></svg>
+      </button>
+      <div id="readonly"><svg class="lockIcon" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="10.4" width="14" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/></svg><span class="full">Read-only — your export files are never modified.
+        Unofficial tool, not affiliated with WhatsApp.</span><span class="brief">Read-only ·
         unofficial tool, not affiliated with WhatsApp</span></div>
     </div>
   </div>
@@ -105,7 +111,9 @@
 <div id="lightbox">
   <div id="lbBar">
     <span id="lbInfo"></span><span class="sp"></span>
-    <button id="lbDl" title="Download original">⬇</button>
+    <button id="lbDl" title="Download original" aria-label="Download original">
+      <svg viewBox="0 0 24 24" width="19" height="19"><path d="M12 3.8v11.4M7.4 10.6l4.6 4.6 4.6-4.6M4.8 19.8h14.4"/></svg>
+    </button>
     <button id="lbClose" title="Close">✕</button>
   </div>
   <div id="lbBody"></div>

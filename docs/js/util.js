@@ -6,6 +6,23 @@ export const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oc
 
 export const $ = id => document.getElementById(id);
 
+/* Inline icons rather than emoji: a glyph's look is up to the platform's
+   font, so the same character lands as a flat outline on one machine and a
+   full-colour cartoon on the next. These carry their own size and inherit
+   the surrounding text colour; .icn in the stylesheet sets the stroke. */
+const icon = (size, paths) =>
+  `<svg class="icn" viewBox="0 0 24 24" width="${size}" height="${size}">${paths}</svg>`;
+
+export const ICON = {
+  call:    icon(17, '<path d="M8.4 4.3l2.1 3.6-1.9 2a10 10 0 0 0 5.5 5.5l2-1.9 3.6 2.1v3.1c0 .9-.8 1.6-1.7 1.5A16 16 0 0 1 3.8 5.9c-.1-.9.6-1.7 1.5-1.7z"/>'),
+  video:   icon(17, '<rect x="3" y="6.5" width="12.5" height="11" rx="2.5"/><path d="M15.5 10.8l5.2-3v8.4l-5.2-3z"/>'),
+  blocked: icon(17, '<circle cx="12" cy="12" r="8.2"/><path d="M6.2 6.2l11.6 11.6"/>'),
+  warn:    icon(17, '<path d="M12 4.2l9 15.6H3z"/><path d="M12 10.2v4.1"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/>'),
+  mic:     icon(17, '<rect x="9.4" y="2.8" width="5.2" height="10.4" rx="2.6"/><path d="M6 11.2a6 6 0 0 0 12 0M12 17.2v3.5"/>'),
+  person:  icon(24, '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.2c0-3.7 3.2-5.6 7.2-5.6s7.2 1.9 7.2 5.6"/>'),
+  doc:     icon(24, '<path d="M6.5 3h7.2l4.8 4.8V21H6.5z"/><path d="M13.7 3v4.8h4.8M9.5 12.5h5M9.5 16h5"/>'),
+};
+
 export const esc = s => s.replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 

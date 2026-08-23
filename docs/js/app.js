@@ -3,7 +3,7 @@
 // module is touched directly only to sniff files during folder ingestion.
 
 import {
-  $, CHUNK, PALETTE, esc, fmtSize, dayOf, fmtTime, fmtDay, toast,
+  $, CHUNK, ICON, PALETTE, esc, fmtSize, dayOf, fmtTime, fmtDay, toast,
   avatarFor, linkify, markify, emojiOnly, MONTHS,
 } from "./util.js";
 import { localSession } from "./session.js";
@@ -219,7 +219,7 @@ function renderHeader(a, meta){
     meta.mediaCount.toLocaleString() + " media" +
     (parts > 2 ? " · " + parts + " participants" : "") +
     " · " + fmtDay(meta.first) + " – " + fmtDay(meta.last) +
-    (meta.recovered ? " · ⚠︎ " + meta.recovered + " entries recovered from damaged zip index" : "");
+    (meta.recovered ? " · " + meta.recovered + " entries recovered from damaged zip index" : "");
   const sel = $("meSelect");
   sel.innerHTML = '<option value="">You: not set</option>' +
     meta.senders.filter(s => s.n).map(s =>
@@ -347,10 +347,10 @@ function msgHTML(m, prev){
 
   if (m.k === 4){
     extraCls = " deleted";
-    body = `<div class="btext">🚫 ${esc(m.t)}${meta}</div>`;
+    body = `<div class="btext">${ICON.blocked}<span>${esc(m.t)}</span>${meta}</div>`;
   } else if (m.k === 3){
-    const ic = /video/i.test(m.t) ? "📹" : "📞";
-    body = `<div class="call"><span class="ic">${ic}</span>${esc(m.t)}${meta}</div>`;
+    const ic = /video/i.test(m.t) ? ICON.video : ICON.call;
+    body = `<div class="call">${ic}${esc(m.t)}${meta}</div>`;
   } else if (m.k === 1){
     body = mediaHTML(m, meta);
     if (body === null) return stickerHTML(m, cont, mine, showName, color, sender);
@@ -368,7 +368,7 @@ function msgHTML(m, prev){
 function mediaHTML(m, meta){
   const cap = m.t ? `<div class="btext caption">${state.query ? markify(esc(m.t), state.query) : linkify(esc(m.t))}</div>` : "";
   if (!m.a){   // media omitted from the export; any text is its caption
-    return `<div class="missing">🚫 ${esc(m.mt || "media omitted")} <small>(not included in this export)</small></div>
+    return `<div class="missing">${ICON.blocked}<span>${esc(m.mt || "media omitted")} <small>(not included in this export)</small></span></div>
             ${cap}<div class="btext">${meta}</div>`;
   }
   const name = m.a, enc = encodeURIComponent(name);
@@ -388,13 +388,13 @@ function mediaHTML(m, meta){
     return `<div class="mediaBox"><video class="vid" controls preload="metadata" playsinline
         data-m="${enc}" onerror="mediaFail(this)"></video></div>${cap}<div class="btext">${meta}</div>`;
   if (["opus","ogg","mp3","m4a","aac","wav"].includes(ext))
-    return `<div>🎤<audio controls preload="none" data-m="${enc}"
+    return `<div class="voice">${ICON.mic}<audio controls preload="none" data-m="${enc}"
         onerror="mediaFail(this)"></audio></div>${cap}<div class="btext">${meta}</div>`;
   if (ext === "vcf")
-    return `<div class="filechip"><span class="fic">👤</span><div>
+    return `<div class="filechip"><span class="fic">${ICON.person}</span><div>
         <div class="fname">${esc(name.replace(/\.vcf$/i,""))}</div>
         <a onclick="return saveDoc('${enc}')">Save contact file</a></div></div>${cap}<div class="btext">${meta}</div>`;
-  return `<div class="filechip"><span class="fic">📄</span><div>
+  return `<div class="filechip"><span class="fic">${ICON.doc}</span><div>
       <div class="fname">${esc(name)}</div>
       <a onclick="return openDoc('${enc}')">Open</a> &nbsp;
       <a onclick="return saveDoc('${enc}')">Download</a></div></div>${cap}<div class="btext">${meta}</div>`;
@@ -450,10 +450,10 @@ function saveDoc(enc){
 }
 function mediaFail(el){
   const enc = el.dataset.m || "";
+  const link = enc ? ` · <a onclick="return saveDoc('${enc}')">download original</a>` : "";
   const wrap = document.createElement("div");
   wrap.className = "missing";
-  wrap.innerHTML = `⚠️ Can't preview this file` +
-    (enc ? ` · <a onclick="return saveDoc('${enc}')">download original</a>` : "");
+  wrap.innerHTML = `${ICON.warn}<span>Can't preview this file${link}</span>`;
   (el.closest(".mediaBox") || el).replaceWith(wrap);
 }
 function rerenderAll(){
@@ -647,7 +647,7 @@ function scrollToMsg(i, center = true, flash = false){
   anchorUntil = performance.now() + 4000;
 }
 
-/* ---- in-app calendar: opens under the 📅 button, highlights days with
+/* ---- in-app calendar: opens under the header date button, highlights days with
    messages ---- */
 const calState = {y: 0, m: 0};
 function openCal(){
@@ -742,7 +742,7 @@ function gotoResult(){
 }
 $("qPrev").onclick = () => stepResult(-1);
 $("qNext").onclick = () => stepResult(1);
-// touch keyboards have no Shift+Enter — the ↑/↓ buttons step through results
+// touch keyboards have no Shift+Enter — the arrow buttons step through results
 if (matchMedia("(pointer:coarse)").matches)
   $("q").placeholder = "Search within chat…";
 
