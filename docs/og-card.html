@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Archive Viewer — Open Graph card source (1200 × 630)</title>
+<!--
+  Source artboard for docs/og.png — direction "the artefact": the viewer
+  window shown off-axis and cropped by the card edge, so it reads as a
+  document being read rather than a screenshot of a messaging app.
+
+  Hand-written HTML + CSS, inline SVG. No build step, no external fonts,
+  no external assets — same rule as the rest of the repo.
+
+  Regenerate the PNGs:
+    chrome --headless --screenshot=docs/og.png --window-size=1200,630 \
+           --hide-scrollbars docs/og-card.html
+    chrome --headless --screenshot=docs/og-2x.png --window-size=1200,630 \
+           --force-device-scale-factor=2 --hide-scrollbars docs/og-card.html
+  (or open this file and screenshot the .card element at 1x and 2x).
+
+  Every colour, type size and radius below is copied from css/app.css.
+  Do not add colours that aren't in :root there.
+-->
+<style>
+  :root{
+    --bg:#0b141a; --panel:#111b21; --panel2:#202c33; --panel3:#2a3942;
+    --border:#222d34; --text:#e9edef; --sub:#8696a0; --accent:#00a884;
+    --out:#005c4b; --chip:#182229; --link:#53bdeb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{background:#06090b}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    color:var(--text); -webkit-font-smoothing:antialiased;
+  }
+
+  /* the card: exactly the OG / twitter:summary_large_image box */
+  .card{
+    width:1200px; height:630px; position:relative; overflow:hidden;
+    background-color:var(--bg);
+    background-image:radial-gradient(rgba(255,255,255,.03) 1px, transparent 1.4px);
+    background-size:24px 24px;
+  }
+
+  /* ---------- left column: the load-bearing half ---------- */
+  .col{position:absolute; left:64px; top:110px; width:452px}
+  .lockup{display:flex; align-items:center; gap:15px}
+  .lockup svg{display:block; flex:none}
+  .name{font-size:42px; font-weight:300; letter-spacing:-.3px; line-height:1.1}
+  .qual{font-size:20px; font-weight:300; color:var(--sub); margin-top:4px}
+  .lead{font-size:26px; font-weight:300; line-height:1.4; margin-top:44px}
+  .points{display:flex; flex-direction:column; gap:9px; margin-top:26px; color:var(--sub)}
+  .points div{font-size:18px; line-height:1.5}
+  /* 528px and 15.5px keeps the disclosure on one line and ≥30px clear of the
+     window edge even if a renderer substitutes a wider font */
+  .foot{
+    position:absolute; left:64px; bottom:60px; width:528px;
+    display:flex; flex-direction:column; gap:5px; font-size:15.5px; color:var(--sub);
+  }
+
+  /* ---------- right: the viewer window, off-axis, cropped ----------
+     620 x 560 authored at app scale, then scaled 1.3 so the conversation
+     stays legible at feed size; it bleeds off the right and bottom edges. */
+  .window{
+    position:absolute; left:600px; top:38px; width:620px; height:560px;
+    transform-origin:top left; transform:rotate(-1.8deg) scale(1.3);
+    border-radius:14px; border:1px solid var(--border); overflow:hidden;
+    background:var(--bg); box-shadow:0 26px 70px rgba(0,0,0,.62);
+    display:flex; flex-direction:column;
+  }
+  .titlebar{
+    display:flex; align-items:center; gap:9px; padding:9px 12px; flex:none;
+    background:var(--panel); border-bottom:1px solid var(--border);
+  }
+  .lights{display:flex; gap:6px}
+  .lights i{width:9px; height:9px; border-radius:50%; background:var(--panel3)}
+  .appname{display:flex; align-items:center; gap:7px; margin-left:10px;
+    font-size:11.5px; color:var(--sub)}
+  .appname svg{display:block}
+  .ro{margin-left:auto; font-size:10.5px; color:var(--sub);
+    border:1px solid var(--border); border-radius:99px; padding:3px 8px}
+
+  .chathead{display:flex; align-items:center; gap:11px; padding:9px 14px;
+    background:var(--panel2); flex:none}
+  .avatar{width:40px; height:40px; border-radius:50%; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:600; color:#fff; background:#8b7add55}
+  .cmeta{min-width:0; flex:1}
+  .cname{font-size:15px; font-weight:500}
+  .csub{font-size:12.5px; color:var(--sub); margin-top:1px}
+  .tools{display:flex; align-items:center; gap:8px; color:var(--sub)}
+  .tools svg{display:block; fill:none; stroke:currentColor; stroke-width:1.7;
+    stroke-linecap:round; stroke-linejoin:round}
+
+  .scroller{
+    flex:1; padding:14px 28px 18px; display:flex; flex-direction:column;
+    background-color:var(--bg);
+    background-image:radial-gradient(rgba(255,255,255,.03) 1px, transparent 1.4px);
+    background-size:24px 24px;
+  }
+  .day{display:flex; justify-content:center; margin:6px 0 10px}
+  .day span{background:var(--chip); color:var(--sub); font-size:12px; padding:5px 12px;
+    border-radius:8px; box-shadow:0 1px 1px rgba(0,0,0,.3)}
+  .row{display:flex; margin-top:10px}
+  .row.out{justify-content:flex-end}
+  .bubble{max-width:70%; background:var(--panel2); border-radius:9px; padding:5px 9px 6px;
+    box-shadow:0 1px 1px rgba(0,0,0,.25)}
+  .row.out .bubble{background:var(--out)}
+  .bubble.tight{max-width:none; padding:6px 9px 7px}
+  .sender{font-size:12.5px; font-weight:600; color:var(--link); margin:1px 0 2px}
+  .btext{font-size:14.2px; line-height:1.42}
+  .meta{display:flex; justify-content:flex-end; font-size:10.8px; color:var(--sub); margin-top:3px}
+  .row.out .meta{color:#9fd2c6}
+
+  /* voice note: 262px transport, waveform bars measured-looking, not decorative */
+  .voice{display:flex; align-items:center; gap:10px; width:262px}
+  .vplay{width:34px; height:34px; border-radius:50%; flex:none; color:var(--sub);
+    display:flex; align-items:center; justify-content:center}
+  .vplay svg{display:block}
+  .vwave{flex:1; height:26px; min-width:0; display:flex; align-items:center;
+    justify-content:space-between}
+  .vwave i{width:2px; border-radius:1px; background:var(--sub)}
+  .vwave i.on{background:var(--accent)}
+  .vtime{flex:none; min-width:34px; text-align:right; font-size:11.5px; color:var(--sub);
+    font-variant-numeric:tabular-nums}
+
+  .filechip{display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.18);
+    border-radius:8px; padding:10px 12px; max-width:320px}
+  .filechip .fic{display:flex; color:var(--sub)}
+  .filechip .fic svg{display:block; fill:none; stroke:currentColor; stroke-width:1.7;
+    stroke-linecap:round; stroke-linejoin:round}
+  .fname{font-size:13.5px; line-height:1.3}
+  .fopen{font-size:12px; color:var(--link); margin-top:2px}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- the viewer window, drawn first so the left column always wins the stack -->
+  <div class="window">
+    <div class="titlebar">
+      <span class="lights"><i></i><i></i><i></i></span>
+      <span class="appname">
+        <svg viewBox="0 0 16 16" width="17" height="17" aria-hidden="true">
+          <rect x="4.4" y="2.9" width="7.2" height="4.9" rx="1.9" fill="#00a884"></rect>
+          <circle cx="6.3" cy="5.35" r="0.75" fill="#111b21"></circle>
+          <circle cx="8" cy="5.35" r="0.75" fill="#111b21"></circle>
+          <circle cx="9.7" cy="5.35" r="0.75" fill="#111b21"></circle>
+          <path d="M3.4 8.1 V12 Q3.4 13.3 4.7 13.3 H11.3 Q12.6 13.3 12.6 12 V8.1" fill="none" stroke="#e9edef" stroke-width="1.5"></path>
+          <path d="M2.5 8.1 H13.5" stroke="#e9edef" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+        Archive Viewer
+      </span>
+      <span class="ro">read-only</span>
+    </div>
+
+    <div class="chathead">
+      <div class="avatar">TC</div>
+      <div class="cmeta">
+        <div class="cname">Trail Crew</div>
+        <div class="csub">4 participants · 8,214 messages · 2.1 GB zip</div>
+      </div>
+      <div class="tools">
+        <svg viewBox="0 0 24 24" width="19" height="19"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 9.5h17M8 3v4M16 3v4"></path></svg>
+        <svg viewBox="0 0 24 24" width="19" height="19"><circle cx="11" cy="11" r="6.5"></circle><path d="M20.5 20.5l-4.7-4.7"></path></svg>
+      </div>
+    </div>
+
+    <div class="scroller">
+      <div class="day"><span>14 Jun 2019</span></div>
+
+      <div class="row">
+        <div class="bubble">
+          <div class="sender">Maya Ellis</div>
+          <div class="btext">Found the ridge photos. All 412 of them.</div>
+          <div class="meta">9:41 am</div>
+        </div>
+      </div>
+
+      <div class="row out">
+        <div class="bubble">
+          <div class="btext">Exported the whole chat before I wiped the phone.</div>
+          <div class="meta">9:42 am</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="bubble tight">
+          <div class="sender">Maya Ellis</div>
+          <div class="voice">
+            <span class="vplay"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M8.5 5.4l9.6 6.6-9.6 6.6z" fill="currentColor" stroke="none"></path></svg></span>
+            <span class="vwave"><i class="on" style="height:5px"></i><i class="on" style="height:9px"></i><i class="on" style="height:14px"></i><i class="on" style="height:19px"></i><i class="on" style="height:24px"></i><i class="on" style="height:17px"></i><i class="on" style="height:10px"></i><i class="on" style="height:13px"></i><i class="on" style="height:20px"></i><i style="height:26px"></i><i style="height:22px"></i><i style="height:15px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:23px"></i><i style="height:25px"></i><i style="height:20px"></i><i style="height:12px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:16px"></i><i style="height:21px"></i><i style="height:13px"></i><i style="height:6px"></i></span>
+            <span class="vtime">0:14</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="bubble tight">
+          <div class="filechip">
+            <span class="fic"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6.5 3h7.2l4.8 4.8V21H6.5z"></path><path d="M13.7 3v4.8h4.8M9.5 12.5h5M9.5 16h5"></path></svg></span>
+            <span>
+              <span class="fname">ridge-trail-map.pdf</span>
+              <span class="fopen" style="display:block">Open</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="lockup">
+      <svg viewBox="0 0 16 16" width="54" height="54" aria-hidden="true">
+        <rect x="4.4" y="2.9" width="7.2" height="4.9" rx="1.9" fill="#00a884"></rect>
+        <circle cx="6.3" cy="5.35" r="0.75" fill="#111b21"></circle>
+        <circle cx="8" cy="5.35" r="0.75" fill="#111b21"></circle>
+        <circle cx="9.7" cy="5.35" r="0.75" fill="#111b21"></circle>
+        <path d="M3.4 8.1 V12 Q3.4 13.3 4.7 13.3 H11.3 Q12.6 13.3 12.6 12 V8.1" fill="none" stroke="#e9edef" stroke-width="1.5"></path>
+        <path d="M2.5 8.1 H13.5" stroke="#e9edef" stroke-width="1.5" stroke-linecap="round"></path>
+      </svg>
+      <div>
+        <div class="name">Archive Viewer</div>
+        <div class="qual">for WhatsApp exports</div>
+      </div>
+    </div>
+
+    <div class="lead">Your WhatsApp exports, readable again.</div>
+
+    <div class="points">
+      <div>Nothing is uploaded — everything runs in your browser.</div>
+      <div>Read-only — your archives are never modified.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>Unofficial open-source tool — not affiliated with WhatsApp or Meta.</div>
+    <div>github.com/feynma1h/whatsapp-archive-viewer</div>
+  </div>
+</div>
+</body>
+</html>
