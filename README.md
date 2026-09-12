@@ -59,6 +59,7 @@ docs/               the deployable site (GitHub Pages serves this folder)
   index.html        markup
   og-card.html      social-preview artboard — both PNGs render from it
   og-2x.png         the social preview the page links (og.png is the 1x)
+  thumbnail.png     4:3 project thumbnail
   css/app.css       styles
   js/util.js        shared helpers & constants
   js/chatparse.js   chat-text parser + message classifier
