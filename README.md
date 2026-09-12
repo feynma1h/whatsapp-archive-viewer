@@ -57,9 +57,7 @@ and can't be recovered from it. Android's export format is not parsed yet.
 ```
 docs/               the deployable site (GitHub Pages serves this folder)
   index.html        markup
-  og-card.html      social-preview artboard — both PNGs render from it
-  og-2x.png         the social preview the page links (og.png is the 1x)
-  thumbnail.png     4:3 project thumbnail
+  og-2x.png         the social preview the page links
   css/app.css       styles
   js/util.js        shared helpers & constants
   js/chatparse.js   chat-text parser + message classifier
@@ -67,6 +65,10 @@ docs/               the deployable site (GitHub Pages serves this folder)
   js/session.js     data layer: opens an archive, serves messages and media
   js/voice.js       voice-note player: waveform measurement and transport
   js/app.js         UI: rendering, scrolling, search, calendar, lightbox
+design/             artwork sources and spare renders (not served)
+  og-card.html      social-preview artboard that both PNGs render from
+  og.png            the 1x render of the social preview
+  thumbnail.png     4:3 project thumbnail
 tests/fixtures.js   builds synthetic export zips (normal, damaged, zip64)
 tests/*.test.js     the suite, run by node's own test runner
 package.json        marks the repo as ES modules; no dependencies

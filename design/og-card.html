@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex">
 <title>Archive Viewer — Open Graph card source (1200 × 630)</title>
 <!--
-  Source artboard for docs/og.png — direction "the artefact": the viewer
+  Source artboard for docs/og-2x.png — direction "the artefact": the viewer
   window shown off-axis and cropped by the card edge, so it reads as a
   document being read rather than a screenshot of a messaging app.
 
@@ -13,13 +13,13 @@
   no external assets — same rule as the rest of the repo.
 
   Regenerate the PNGs:
-    chrome --headless --screenshot=docs/og.png --window-size=1200,630 \
-           --hide-scrollbars docs/og-card.html
+    chrome --headless --screenshot=design/og.png --window-size=1200,630 \
+           --hide-scrollbars design/og-card.html
     chrome --headless --screenshot=docs/og-2x.png --window-size=1200,630 \
-           --force-device-scale-factor=2 --hide-scrollbars docs/og-card.html
+           --force-device-scale-factor=2 --hide-scrollbars design/og-card.html
   (or open this file and screenshot the .card element at 1x and 2x).
 
-  Every colour, type size and radius below is copied from css/app.css.
+  Every colour, type size and radius below is copied from docs/css/app.css.
   Do not add colours that aren't in :root there.
 -->
 <style>
